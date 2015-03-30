@@ -1,0 +1,84 @@
+# YAML
+-
+  hostname: 1
+
+  vrf:
+    custVrfName: &custVrf1 vrf1
+    custVrfAs: &custAs1 1000
+    custVrfId: *custAs1
+
+  peceinterface:
+    peCeInt: fa0/0
+    peCeSubnet: 192.168.10.
+    peCehost: 100
+    peCeMask: 255.255.255.0
+
+  loopback:
+    loInt: &looIntName1 loo0
+    loSubnet: 1.1.1.
+    lohost: 1
+    loMask: 255.255.255.255
+
+  coreinterface:
+    coreInt: fa0/1
+    coreSubnet: 192.168.41.
+    corehost: 1
+    coreMask: 255.255.255.0
+    ospfId: 666
+    coreOspfArea: 0
+
+  corebgp:
+    coreBgpAs: *custAs1
+    rrIP: 192.168.41.1
+    loInt: *looIntName1
+
+  staticroute:
+    custVrfName: *custVrf1
+    peCeSubnet: 192.168.10.
+    peCehost: 100
+    peCeMask: 255.255.255.0
+    ceIp: 1
+
+  routerid: *looIntName1
+
+-
+  hostname: 2
+
+  vrf:
+    custVrfName: &custVrf2 vrf1
+    custVrfAs: &custAs2 1000
+    custVrfId: *custAs2
+
+  peceinterface:
+    peCeInt: fa0/0
+    peCeSubnet: 192.168.20.
+    peCehost: 100
+    peCeMask: 255.255.255.0
+
+  loopback:
+    loInt: &looIntName2 loo0
+    loSubnet: 2.2.2.
+    lohost: 2
+    loMask: 255.255.255.255
+
+  coreinterface:
+    coreInt: fa0/1
+    coreSubnet: 192.168.42.
+    corehost: 2
+    coreMask: 255.255.255.0
+    ospfId: 666
+    coreOspfArea: 0
+
+  corebgp:
+    coreBgpAs: *custAs2
+    rrIP: 192.168.42.2
+    loInt: *looIntName2
+
+  staticroute:
+    custVrfName: *custVrf2
+    peCeSubnet: 192.168.20.
+    peCehost: 0
+    peCeMask: 255.255.255.0
+    ceIp: 1
+
+  routerid: *looIntName2
