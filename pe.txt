@@ -1,0 +1,52 @@
+hostname {{ hostName }}
+ip cef
+!
+ip vrf {{ custVrfName }}
+ rd {{ custVrfAs }}:{{ custVrfId }}
+ route-target export {{ custVrfAs }}:{{ custVrfId }}
+ route-target import {{ custVrfAs }}:{{ custVrfId }}
+!
+interface {{ loInt }}
+ ip address {{ loSubnet }}{{ lohost }} {{ loMask }}
+!
+interface {{ peCeInt }}
+ ip vrf forwarding {{ custVrfName }}
+ ip address {{ peCeSubnet }}{{ peCehost }} {{ peCeMask }}
+ duplex full
+ speed 100
+!
+interface {{ coreInt }}
+  ip address {{ coreSubnet }}{{ corehost }} {{ coreMask }}
+ duplex full
+ speed 100
+ mpls label protocol ldp
+ mpls ip
+!
+router ospf {{ ospfId }}
+ log-adjacency-changes
+ network {{ loSubnet }}{{ lohost }} {{ loInvSubnet }} area {{ coreOspfArea }}
+ network {{ coreSubnet }}{{ corehost }} {{ coreInvSubnet }} area {{ coreOspfArea }}
+!
+router bgp {{ coreBgpAs }}
+ no synchronization
+ bgp log-neighbor-changes
+ neighbor {{ rrIp }} remote-as {{ coreBgpAs }}
+ neighbor {{ rrIp }} update-source {{ loInt }}
+ no auto-summary
+ !
+address-family vpnv4
+  neighbor {{ rrIp }} activate
+  neighbor {{ rrIp }} send-community both
+exit-address-family
+ !
+address-family ipv4 vrf {{ custVrfName }}
+  redistribute connected
+  redistribute static
+  no synchronization
+ exit-address-family
+!
+ip forward-protocol nd
+ip route vrf {{ custVrfName }} {{ peCeSubnet }}{{ peCehost }} {{ peCeMask }} {{ ceIp }}
+!
+mpls ldp router-id {{ loInt }} force
+
