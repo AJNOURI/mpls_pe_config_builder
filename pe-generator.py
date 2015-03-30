@@ -3,9 +3,9 @@
 import yaml
 import jinja2
 
-stream = open("./templates/static-mpls-vpn/static-mpls-vpn-pe.yaml",'r')
+stream = open("STATIC-MPLS.yaml",'r')
 vars = yaml.load(stream)
 
-env = Environment(loader=FileSystemLoader('../templates/static-mpls-vpn/'))
+env = Environment(loader=FileSystemLoader('.'))
 template = env.get_template('pe.txt')
 print template.render(vars)
